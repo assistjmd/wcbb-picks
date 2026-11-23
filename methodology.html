@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<title>Women's Picks Method</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --ink: #1d1d1b; --muted: #6b6b66; --line: #e3e2dc; --accent: #7a3a9a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141413; --card: #1d1d1b; --ink: #ecebe6; --muted: #9b9a93; --line: #2f2f2c; --accent: #c99ae6;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141413; --card: #1d1d1b; --ink: #ecebe6; --muted: #9b9a93; --line: #2f2f2c; --accent: #c99ae6;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 700px; margin: 0 auto; padding: 24px 16px 64px; }
+  a { color: var(--accent); }
+  h1 { font-size: 26px; margin: 8px 0 4px; line-height: 1.25; }
+  h2 { font-size: 19px; margin: 36px 0 8px; }
+  p, li { margin: 8px 0; }
+  ul { padding-left: 20px; }
+  .muted { color: var(--muted); }
+  .wrap { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: 10px; margin: 12px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+  th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--muted); font-size: 12px; font-weight: 600; }
+  td.l, th.l { text-align: left; }
+  tr:last-child td { border-bottom: 0; }
+  .note { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+          border-radius: 8px; padding: 10px 14px; margin: 16px 0; }
+</style>
+</head>
+<body>
+<main>
+<p><a href="./">&larr; Back to picks</a></p>
+<h1>How the women's picks work, and how they tested</h1>
+<p class="muted">NCAA Division I women's basketball. Experimental, first season. Updated November 2026.</p>
+
+<div class="note"><b>Short version:</b> past betting lines show a big edge, about 60-68% winners. That is far too
+big to be real money. Most past women's lines came from one soft book per game, often with low limits. This
+season's closing lines show no edge so far. The picks are posted as a paper test.</div>
+
+<h2>The model</h2>
+<ul>
+<li>Every D1 women's game since 2016 is pulled from ESPN: scores, box scores and player minutes.</li>
+<li>Our own opponent-adjusted ratings are refit every day from games played before that day. They cover offense,
+defense and pace, and the four factors: shooting, turnovers, rebounding and free throws.</li>
+<li>Gradient-boosted trees then project each game's margin and total. Inputs are the ratings, season-to-date
+stats, last season's ratings, player values (so returning players and transfers carry over), rest, travel and
+home court.</li>
+<li>The model never sees the betting line.</li>
+</ul>
+
+<h2>How it was tested</h2>
+<p>The test is walk-forward. Each season is predicted by a model trained only on earlier seasons, then graded
+against the lines ESPN recorded from real sportsbooks. Line coverage is thin: about 88% of games in 2022-23, about
+half in 2023-24, and only 16-22% since.</p>
+<p>The betting rules were chosen on one season, 2022-23 (the best covered), and then left alone:</p>
+<ul>
+<li>Spreads: the model must differ from the line by more than 6 points.</li>
+<li>Totals: the same 6-point gap, in November and December only.</li>
+</ul>
+<p>Every other season was a check, not a tuning step. Break-even at -110 is 52.4%.</p>
+
+<div class="wrap"><table>
+<tr><th class="l">Same rules, other seasons</th><th>Spreads</th><th>Totals</th></tr>
+<tr><td class="l">2019-20 to 2021-22, closing line</td><td>74% (n=226)</td><td>62% (n=106)</td></tr>
+<tr><td class="l">2023-24 to 2025-26, closing line</td><td>65% (n=586)</td><td>60% (n=587)</td></tr>
+<tr><td class="l">2023-24 to 2025-26, opening line</td><td>67% (n=631)</td><td>62% (n=639)</td></tr>
+<tr><td class="l"><b>This season so far, closing line</b></td><td><b>44% (19-24)</b></td><td><b>44% (12-15)</b></td></tr>
+<tr><td class="l"><b>This season so far, DraftKings opener</b></td><td><b>62% (31-19)</b></td><td><b>44% (15-19)</b></td></tr>
+</table></div>
+
+<h2>Why we don't trust the big numbers</h2>
+<ul>
+<li><b>Soft, single-book lines.</b> Most past games had one book's number. A "closing" line may be a price that was
+pulled before tip, or one with a tiny limit.</li>
+<li><b>The model is only about as accurate as those lines.</b> Its average miss is about 9.7 points, the same as the
+line's. When two forecasts are equally good and disagree by 6+ points, the truth often lands between them. That
+alone produces hit rates near 60%.</li>
+<li><b>Which games have lines.</b> In thin seasons, books mostly list bigger programs and lopsided games. This
+November most lined games had spreads of 30+ points.</li>
+<li><b>This season is the real test.</b> At DraftKings, lines have moved toward the model after opening (about 3
+points on average), but by tip the edge has been gone. Any edge is probably only in early lines and small
+limits.</li>
+</ul>
+
+<h2>Timing</h2>
+<p>Most women's lines post on game day. The model checks several times each morning and once the evening before.
+Each pick is frozen at the first line it saw, and its result is graded against that line.</p>
+
+<p class="muted">Experimental and for fun. Not betting advice. No real money is placed on these picks.</p>
+</main>
+</body>
+</html>

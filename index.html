@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<title>Women's CBB Picks</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --ink: #1d1d1b; --muted: #6b6b66; --line: #e3e2dc;
+    --win: #1f7a4d; --loss: #b3402f; --accent: #7a3a9a; --pick-bg: #f4ecf8;
+    --band80: #e3e2dc; --band50: #c9c7bf; --win80: rgba(122,58,154,.26); --win50: rgba(122,58,154,.60);
+    --win-bg: #e3f1e9; --loss-bg: #f7e6e2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141413; --card: #1d1d1b; --ink: #ecebe6; --muted: #9b9a93; --line: #2f2f2c;
+      --win: #4cbb83; --loss: #e07a68; --accent: #c99ae6; --pick-bg: #2e2238;
+      --band80: #2f2f2c; --band50: #4a4945; --win80: rgba(201,154,230,.30); --win50: rgba(201,154,230,.65);
+      --win-bg: #183526; --loss-bg: #3d211c;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141413; --card: #1d1d1b; --ink: #ecebe6; --muted: #9b9a93; --line: #2f2f2c;
+    --win: #4cbb83; --loss: #e07a68; --accent: #c99ae6; --pick-bg: #2e2238;
+      --band80: #2f2f2c; --band50: #4a4945; --win80: rgba(201,154,230,.30); --win50: rgba(201,154,230,.65);
+      --win-bg: #183526; --loss-bg: #3d211c;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 24px; margin: 0; }
+  h2 { font-size: 17px; margin: 32px 0 4px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 13px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .card .k { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  .card .v { font-size: 22px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .list { display: grid; gap: 8px; margin-top: 10px; }
+  .pk { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px;
+        display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; align-items: baseline; }
+  .pk .m { font-weight: 500; }
+  .pk .p { font-size: 18px; font-weight: 650; color: var(--accent); }
+  .pk .r { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 600; border-radius: 6px; padding: 1px 6px; margin-left: 6px;
+         vertical-align: 2px; background: var(--pick-bg); color: var(--accent); }
+  .tag.dbl { background: var(--accent); color: var(--bg); }
+  .tag.late { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+  .win { color: var(--win); font-weight: 650; } .loss { color: var(--loss); font-weight: 650; }
+  .push { color: var(--muted); font-weight: 650; }
+  .empty { padding: 18px; text-align: center; color: var(--muted); background: var(--card);
+           border: 1px dashed var(--line); border-radius: 10px; }
+  details { margin-top: 36px; }
+  summary { cursor: pointer; font-weight: 600; }
+  details p { margin: 8px 0; }
+  .day { margin: 18px 0 0; font-size: 13px; color: var(--muted); font-weight: 600; }
+  .rng { grid-column: 1 / -1; margin-top: 6px; }
+  .bar { position: relative; height: 40px; }
+  .bar > div { position: absolute; }
+  .b80 { top: 22px; height: 8px; background: var(--band80); border-radius: 4px; }
+  .b50 { top: 19px; height: 14px; background: var(--band50); border-radius: 4px; }
+  .w80 { top: 22px; height: 8px; background: var(--win80); }
+  .w50 { top: 19px; height: 14px; background: var(--win50); }
+  .tick { top: 14px; height: 24px; width: 2px; background: var(--ink); }
+  .dot { top: 20px; width: 12px; height: 12px; margin-left: -6px; border-radius: 6px; background: var(--card);
+         border: 2px solid var(--ink); box-sizing: border-box; }
+  .lbl { top: 0; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .axis { position: relative; height: 16px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .axis span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+  .axis .c { color: var(--ink); font-weight: 600; }
+  .sim { grid-column: 1 / -1; border-top: 1px solid var(--line); margin-top: 8px; padding-top: 8px; display: grid; gap: 6px; }
+  .sim .h { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .sim .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .chip { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px; white-space: nowrap; }
+  .chip.win { background: var(--win-bg); color: var(--win); } .chip.loss { background: var(--loss-bg); color: var(--loss); }
+  .chip.push { background: var(--band80); color: var(--muted); }
+  .warn { margin-top: 14px; background: var(--pick-bg); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+          border-radius: 8px; padding: 10px 14px; font-size: 14px; }
+  .key { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; font-size: 12px; color: var(--muted); margin-top: 6px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Women's College Basketball Picks</h1>
+  <div class="muted small"><span id="meta">Loading…</span> · <a href="methodology.html" style="color: var(--accent)">How the picks work and how they tested</a></div>
+  <div class="warn"><b>Experimental, paper only.</b> This is a new NCAA women's model in its first season. Its backtest looks
+    much better than any real betting edge should. Most past lines came from one soft book per game, and this season's
+    closing lines show no edge yet. The picks are tracked here to test the model, not as advice.</div>
+  <div class="cards" id="cards"></div>
+
+  <div class="card" style="margin-top: 16px">
+    <div style="font-size: 13px; font-weight: 600">Reading the range bar</div>
+    <div class="key">
+      <div>Dark: middle half of outcomes</div><div>Dark + light: 8 in 10 outcomes</div>
+      <div>Dot: most likely result</div><div>Tick: the betting line</div>
+      <div style="grid-column: 1 / -1">Blue: results where the pick wins</div>
+    </div>
+  </div>
+
+  <h2 id="today-h">Today</h2>
+  <div class="list" id="today"></div>
+
+  <section id="tomorrow-s" hidden>
+    <h2>Tomorrow</h2>
+    <div class="muted small">Posted the evening before, for the few games whose lines are already up.</div>
+    <div class="list" id="tomorrow"></div>
+  </section>
+
+  <details id="others-s" hidden style="margin-top: 24px">
+    <summary id="others-h">Every other game today</summary>
+    <div class="muted small" style="margin-top: 6px">No pick: the model and the line roughly agree. The bar is the range for total points.</div>
+    <div class="list" id="others"></div>
+  </details>
+
+  <h2>Results</h2>
+  <div id="results"></div>
+
+  <details>
+    <summary>How to read this</summary>
+    <p><b>The pick</b> is the side and the line it was made at. If your book has a worse number, the edge is smaller.</p>
+    <p><b>Model</b> is the model's own projected margin or total. <b>Edge</b> is how far that is from the line, in points. Spreads need 6+ points of edge. Totals need 6+ and only run in November and December. Those rules were fixed on the 2023 season and left unchanged after that.</p>
+    <p><b>Timing</b>: most women's lines post on game day, so picks usually appear that morning (Pacific time). Each pick is frozen at the first line the model saw.</p>
+    <p><b>Range bar</b>: where the final total (or the picked team's margin) is likely to land. The dark band is the middle half of past results like this one; the light band extends it to the middle 8 in 10, so 1 in 10 lands past each end. The center leans only part of the way from the line toward the model, because that's how much of the model's disagreement held up in testing. "% to hit" is the chance the pick wins from that range. For women's, the center is set halfway between the line and the model, which is more cautious than the backtest suggests.</p>
+    <p><b>Units</b> assume 1 unit risked per pick at −110.</p>
+    <p class="muted">Experimental and for fun. A model, not a guarantee. Women's lines often have low limits, and past results may not repeat. Bet only what you can afford to lose.</p>
+  </details>
+</main>
+<script>
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const tip = s => s ? new Date(s).toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit", timeZoneName: "short" }) : "";
+const matchup = p => `${esc(p.away)} ${p.neutral ? "vs" : "@"} ${esc(p.home)}`;
+const rec = x => `${x.w}-${x.l}${x.p ? "-" + x.p : ""}`;
+const u = x => `${x > 0 ? "+" : ""}${x.toFixed(1)}u`;
+
+const pos = (r, x) => Math.max(0, Math.min(100, 50 + (x - r.mid) / (r.hi80 - r.mid) * 32));
+const sgn = x => (x > 0 ? "+" : x < 0 ? "−" : "") + Math.abs(Math.round(x));
+function seg(cls, a, b, side, t) {
+  const l = side > 0 ? Math.max(t, a) : a, r = side > 0 ? b : Math.min(t, b);
+  return r > l ? `<div class="${cls}" style="left:${l}%;width:${r - l}%"></div>` : "";
+}
+function rangeBar(r, spread) {
+  const t = pos(r, r.line), a80 = pos(r, r.lo80), b80 = pos(r, r.hi80), a50 = pos(r, r.lo50), b50 = pos(r, r.hi50);
+  const team = esc(r.team);
+  const lineTxt = spread ? (r.line >= 0 ? `${team} by ${r.line}` : `${team} +${-r.line}`) : `Line ${r.line}`;
+  const fmt = x => spread ? sgn(x) : String(Math.round(x));
+  const mid = spread ? `Most likely ${team} ${r.mid >= 0 ? "by " + Math.round(r.mid) : "loses by " + Math.round(-r.mid)}` : `Most likely ${Math.round(r.mid)}`;
+  const lbl = t > 70 ? `right:${100 - t}%` : `left:${t}%`;
+  return `<div class="rng"><div class="bar" aria-hidden="true">
+      <div class="lbl" style="${lbl}">${lineTxt}</div>
+      <div class="b80" style="left:${a80}%;width:${b80 - a80}%"></div>
+      <div class="b50" style="left:${a50}%;width:${b50 - a50}%"></div>
+      ${r.side ? seg("w80", a80, b80, r.side, t) + seg("w50", a50, b50, r.side, t) : ""}
+      <div class="tick" style="left:calc(${t}% - 1px)"></div>
+      <div class="dot" style="left:50%"></div>
+    </div>
+    <div class="axis"><span style="left:${a80}%">${fmt(r.lo80)}</span><span class="c" style="left:50%">${mid}</span><span style="left:${b80}%">${fmt(r.hi80)}</span></div>
+    <div class="muted small">${spread ? `${team}'s margin: ` : ""}8 in 10 land between ${fmt(r.lo80)} and ${fmt(r.hi80)}${spread ? "" : " points"}.</div>
+  </div>`;
+}
+function simList(rows) {
+  if (!rows || !rows.length) return "";
+  return `<div class="sim"><div class="h">Similar past games</div>${rows.map(m => `<div class="row">
+      <div><div class="small" style="font-weight:500">${esc(m.game)} · ${esc(m.date)}</div>
+      <div class="muted small">${esc(m.line)} · model ${esc(m.model)} · final ${esc(m.final)}</div></div>
+      <span class="chip ${esc(m.result)}">${esc(m.result).toUpperCase()}</span></div>`).join("")}</div>`;
+}
+
+function pickCard(p, graded) {
+  const tags = (p.double ? `<span class="tag dbl">2× ref crew</span>` : "") + (p.late ? `<span class="tag late">late</span>` : "");
+  const right = graded
+    ? `<span class="${p.result}">${p.result.toUpperCase()}</span>`
+    : p.range && p.range.p != null ? `<b>${Math.round(p.range.p * 100)}% to hit</b>` : `<span class="muted small">edge ${p.edge}</span>`;
+  const sub = graded ? `Final ${esc(p.final)}` : `${tip(p.start)} · model: ${esc(p.model)}${p.best && p.best !== p.pick.split(" ").pop() ? ` · best line ${esc(p.best)}` : ""}`;
+  return `<div class="pk">
+    <div class="m">${matchup(p)}</div><div class="r">${right}</div>
+    <div class="p">${esc(p.pick)}${tags}</div><div class="r muted small">${p.market}</div>
+    <div class="muted small" style="grid-column: 1 / -1">${sub}${graded ? "" : ` · edge ${p.edge}`}</div>
+    ${!graded && p.range ? rangeBar(p.range, p.market === "spread") : ""}
+    ${graded ? "" : simList(p.similar)}
+  </div>`;
+}
+
+function list(el, rows, emptyText) {
+  rows = rows.slice().sort((a, b) => new Date(a.start) - new Date(b.start));
+  el.innerHTML = rows.length ? rows.map(p => pickCard(p, false)).join("") : `<div class="empty">${emptyText}</div>`;
+}
+
+fetch("picks.json", { cache: "no-store" }).then(r => r.json()).then(d => {
+  document.getElementById("meta").textContent = `Updated ${d.updated}`;
+  const s = d.record.spread, t = d.record.total;
+  const all = { w: s.w + t.w, l: s.l + t.l, p: s.p + t.p, units: s.units + t.units };
+  const card = (k, x) => `<div class="card"><div class="k">${k}</div><div class="v">${rec(x)}</div><div class="muted small">${x.w + x.l ? u(x.units) : "no results yet"}</div></div>`;
+  document.getElementById("cards").innerHTML = card("Overall", all) + card("Spreads", s) + card("Totals", t);
+
+  const day = new Date(d.day + "T12:00:00").toLocaleDateString([], { weekday: "long", month: "short", day: "numeric" });
+  document.getElementById("today-h").textContent = `Today · ${day}`;
+  list(document.getElementById("today"), d.today.filter(p => !p.result), "No picks today.");
+  document.getElementById("tomorrow-s").hidden = !d.tomorrow.length;
+  list(document.getElementById("tomorrow"), d.tomorrow, "");
+
+  const others = (d.others || []).slice().sort((a, b) => new Date(a.start) - new Date(b.start));
+  document.getElementById("others-s").hidden = !others.length;
+  document.getElementById("others-h").textContent = `Every other game today (${others.length})`;
+  document.getElementById("others").innerHTML = others.map(o => `<div class="pk">
+    <div class="m">${matchup(o)}</div><div class="r muted small">${tip(o.start)}</div>
+    <div class="muted small" style="grid-column: 1 / -1">${o.likely ? "Most likely " + esc(o.likely) + " · " : ""}total line ${o.range.line}</div>
+    ${rangeBar(o.range, false)}</div>`).join("");
+
+  const res = document.getElementById("results");
+  if (!d.results.length) { res.innerHTML = `<div class="empty">No graded picks yet.</div>`; return; }
+  const byDay = {};
+  d.results.forEach(p => (byDay[p.day] = byDay[p.day] || []).push(p));
+  res.innerHTML = Object.keys(byDay).sort().reverse().map(k => {
+    const ps = byDay[k], w = ps.filter(p => p.result === "win").length, l = ps.filter(p => p.result === "loss").length;
+    const label = new Date(`${k.slice(0, 4)}-${k.slice(4, 6)}-${k.slice(6)}T12:00:00`).toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" });
+    return `<div class="day">${label} · ${w}-${l}</div><div class="list">${ps.map(p => pickCard(p, true)).join("")}</div>`;
+  }).join("");
+}).catch(() => { document.getElementById("meta").textContent = "No picks posted yet."; });
+</script>
+</body>
+</html>
